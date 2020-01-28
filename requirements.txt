@@ -1,0 +1,16 @@
+Django==2.2
+django-background-tasks
+django-compat
+djangorestframework
+jsonfield==2.0.2
+pytz==2017.2
+six==1.10.0
+virtualenvwrapper==4.7.2
+psycopg2==2.7.0
+celery
+redis
+django-tarview
+docker
+gunicorn
+djangorestframework-jwt
+requests
