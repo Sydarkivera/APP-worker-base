@@ -1,4 +1,4 @@
-Django==2.2
+Django==2.2.9
 django-background-tasks
 django-compat
 djangorestframework
