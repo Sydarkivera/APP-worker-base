@@ -25,6 +25,7 @@ import uuid
 import shutil
 import requests
 from django.http import HttpResponse
+import tempfile
 # from xmlGenerator.xmlGenerator import *
 # from xmlGenerator.xmlExtensions import inlineUUIDModule, inlineDatetimeModule
 
@@ -58,12 +59,29 @@ def execute_command(data):
     logger.info("%s executing command: %s with id: %s" % (os.environ['HOSTNAME'], command, data['container_id']))
 
     try:
-        p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
+        tempLOG = tempfile.TemporaryFile()
+        tempERR = tempfile.TemporaryFile()
+        p = subprocess.Popen(command, stdout=tempLOG, stderr=tempERR, shell=True)
+        
         # p = subprocess.check_output(command, shell=True)
 
         stdout, stderr = p.communicate()
+        # logger.info(stdout)
+        # logger.info(stderr)
+        p.wait()
+
+        tempLOG.seek(0)
+        # print(tempLOG.read())
+        stdout = tempLOG.read()
+
+        tempERR.seek(0)
+        # print(tempERR.read())
+        stderr = tempERR.read()
+
+        tempLOG.close()
+        tempERR.close()
         logger.info("Command finished")
-        logger.info(p.returncode)
+        # logger.info(p.returncode)
         logger.info(stdout)
         logger.info(stderr)
         p.kill()
@@ -76,7 +94,7 @@ def execute_command(data):
             error = stdout.decode('utf-8')
             # logger.error(error)
             # retval = (-1, stderr.decode('utf-8'))
-    except Exception as e:
+    except e:
         logging.error(traceback.format_exc())
         error = traceback.format_exc()
 
@@ -97,7 +115,7 @@ def execute_command(data):
     url = "http://" + container_name + "/api/worker/result/"
     logger.info("%s returning result from job: %s to url: %s" % (os.environ['HOSTNAME'], data['container_id'], url))
     # logger.info(url)
-    returnResult(url, data)
+    returnResult(url, newData)
 
 
 def returnResult(url, data, numberOfTries=0):
