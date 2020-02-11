@@ -45,15 +45,17 @@ def add(a, b):
     # user.email_user('Here is a notification', 'You have been notified')
 
 @background()
-def execute_command(command, job_id):
+def execute_command(data):
     # logger.info("execute command")
     # logger.info(command)
     # logger.info(pwd.getpwuid( os.getuid() )[ 0 ])
 
+    command = data['command']
+
     log = ""
     error = ""
 
-    logger.info("%s executing command: %s with id: %s" % (os.environ['HOSTNAME'], command, job_id))
+    logger.info("%s executing command: %s with id: %s" % (os.environ['HOSTNAME'], command, data['container_id']))
 
     try:
         p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
@@ -62,6 +64,8 @@ def execute_command(command, job_id):
         stdout, stderr = p.communicate()
         logger.info("Command finished")
         logger.info(p.returncode)
+        logger.info(stdout)
+        logger.info(stderr)
         p.kill()
         if stdout and stdout != None:
             log = stdout.decode('utf-8')
@@ -78,17 +82,20 @@ def execute_command(command, job_id):
 
     # communicate result back to server...(Environment variable or settings varaible for APP server name) TODO: container_name
     container_name = "django"
-    data = {}
-    data['stdout'] = log
-    data['stderr'] = error
+    newData = {}
+    newData['stdout'] = log
+    newData['stderr'] = error
     # data['file'] = first_file
-    job = Job.objects.get(pk=job_id)
-    data['process_id'] = job.process_id
-    data['job_id'] = job_id
+    # job = Job.objects.get(pk=job_id)
+    newData['process_id'] = data['process_id']
+    newData['file_name'] = data['file_name']
+    newData['file_id'] = data['file_id']
+    newData['container_id'] = data['container_id']
+    # data['job_id'] = job_id
     # data['job_id'] = job_id#...
     # figure out name of new container in network
     url = "http://" + container_name + "/api/worker/result/"
-    logger.info("%s returning result from job: %s to url: %s" % (os.environ['HOSTNAME'], job_id, url))
+    logger.info("%s returning result from job: %s to url: %s" % (os.environ['HOSTNAME'], data['container_id'], url))
     # logger.info(url)
     try:
         r = requests.put(url, data=data)
@@ -119,7 +126,7 @@ def execute_command(command, job_id):
                 return HttpResponse("Command not present in data", status=400)
 
             # execute command
-            execute_command(response_data['command'], response_data['job_id'])
+            execute_command(response_data)
             pass
     except requests.exceptions.RequestException as e:
         # self.try_again(url, data)
