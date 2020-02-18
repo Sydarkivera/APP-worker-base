@@ -26,15 +26,7 @@ import shutil
 import requests
 from django.http import HttpResponse
 import tempfile
-# from xmlGenerator.xmlGenerator import *
-# from xmlGenerator.xmlExtensions import inlineUUIDModule, inlineDatetimeModule
-
-# from celery import Celery
-# from celery.schedules import crontab
-# from config.celeryconf import app
-# from celery.decorators import task
-# from datetime import timedelta
-# from celery.task import periodic_task
+from time import sleep
 
 logger = getLogger('background_task')
 
@@ -98,11 +90,13 @@ def execute_command(data):
         logging.error(traceback.format_exc())
         error = traceback.format_exc()
 
+    logger.info(error)
+
     # communicate result back to server...(Environment variable or settings varaible for APP server name) TODO: container_name
     container_name = "django"
     newData = {}
     newData['stdout'] = log
-    newData['stderr'] = error
+    newData['stderr'] = stderr
     # data['file'] = first_file
     # job = Job.objects.get(pk=job_id)
     newData['process_id'] = data['process_id']
@@ -155,10 +149,12 @@ def returnResult(url, data, numberOfTries=0):
         logger.info(e)
         logger.info("failed to return result")
         if numberOfTries < 3:
+            sleep(numberOfTries)
             logger.info("retrying")
             returnResult(url, data, numberOfTries+1)
     except:
         logger.info("unknown error")
         if numberOfTries < 3:
+            sleep(numberOfTries)
             logger.info("retrying")
             returnResult(url, data, numberOfTries+1)
