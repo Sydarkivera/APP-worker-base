@@ -83,7 +83,7 @@ def execute_command(data):
             # logger.info(stdout.decode('utf-8'))
             # retval = (1, log)
         if stderr and stderr != None:
-            error = stdout.decode('utf-8')
+            error = stderr.decode('utf-8')
             # logger.error(error)
             # retval = (-1, stderr.decode('utf-8'))
     except e:
