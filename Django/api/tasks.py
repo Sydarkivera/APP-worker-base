@@ -9,7 +9,7 @@ __status__ = "Development"
 from background_task import background
 from django.core.exceptions import ObjectDoesNotExist
 # from api.models import Module, Package, Process, Template, Variable, FileType
-from api.models import Job
+# from api.models import Job
 from logging import getLogger
 import importlib
 import time

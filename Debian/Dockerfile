@@ -42,6 +42,9 @@ RUN chmod 770 /code/run_background_tasks.sh
 # suporvisor is used to let the container both run django in gunicorn and backgroun tasks
 COPY supervisor.conf /etc/supervisor/conf.d/supervisor.conf
 
+# migrate database
+RUN python /code/manage.py migrate
+
 # the port to expose
 EXPOSE 80
 

@@ -10,9 +10,9 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from jsonfield import JSONField
 
-class Job(models.Model):
-    job_id = models.AutoField(primary_key=True)
-    process_id = models.IntegerField(default=0)
+# class Job(models.Model):
+#     job_id = models.AutoField(primary_key=True)
+#     process_id = models.IntegerField(default=0)
     # order = models.IntegerField(default=10000)
     # package = models.ForeignKey(Package, related_name='processes', on_delete=models.CASCADE, blank = True, null=True)
     # template = models.ForeignKey(Template, related_name='processes', on_delete=models.CASCADE, blank = True, null=True)

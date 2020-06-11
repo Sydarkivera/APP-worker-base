@@ -11,7 +11,6 @@ from api import views
 
 urlpatterns = [
     url(r'start/', views.start),
-    url(r'', views.default)
 ]
 
 # APP starts worker process: needs id of job, details of specific job (command, file and other needs)

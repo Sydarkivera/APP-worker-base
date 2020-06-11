@@ -15,7 +15,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework import status
-from api.models import Job
+# from api.models import Job
 # from api.serializers import *
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import get_object_or_404
@@ -49,12 +49,6 @@ import os
 
 from logging import getLogger
 logger = getLogger('django')
-
-@api_view(['GET'])
-def default(request):
-    if request.method == 'GET':
-        add.now(3, 7)
-        return HttpResponse("A simple get request. started add task", status=200)
 
 @api_view(['PUT', 'GET'])
 def start(request):
